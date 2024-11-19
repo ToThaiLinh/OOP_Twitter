@@ -1,7 +1,8 @@
-import login
-import crawl
 from dotenv import load_dotenv
 import os
+
+import login
+import crawl
 
 load_dotenv()
 # Nhập thông tin đăng nhập Twitter
