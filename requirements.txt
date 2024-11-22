@@ -3,3 +3,4 @@ mysql-connector-python==9.1.0
 networkx==3.3
 python-dotenv==1.0.1
 pandas==2.2.2
+datetime==5.4.0
