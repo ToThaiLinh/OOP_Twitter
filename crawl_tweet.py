@@ -26,14 +26,16 @@ driver.add_cookie({
         "value": auth_token,
         "domain": ".x.com"
     })
-time.sleep(5)
 
-driver.get("https://x.com/elonmusk/status/1859472839792820276")
+driver.get("https://x.com/NemoJonw3/status/1861307166944358844")
 time.sleep(5)
 
 try:
     tweet = driver.find_element(By.TAG_NAME, 'main')
     tweet_data = {}
+    hashtag_data = {}
+    mention_data = {}
+
     try:
         tweet_data['tweet_id'] = driver.current_url.split('/')[-1]
     except Exception as e:
@@ -45,19 +47,28 @@ try:
             element = tweet.find_element(By.XPATH, xpath)
 
             if key == 'content':
-                tweet_data[key] = []  # Khởi tạo là một danh sách rỗng
                 list_spans = element.find_elements(By.CSS_SELECTOR, 'span')
-                for span in list_spans:
-                    text = span.text if not span.find_element(By.CLASS_NAME, 'a') else None
-                    tweet_data[key].append(text)
+                text = "".join([span.text for span in list_spans])
+                tweet_data[key] = text
+                mentions = [
+                    word for span in list_spans for word in span.text.split() 
+                    if word.startswith('@')
+                ]
 
-            if key == 'media':
+                hashtags = [
+                    word for span in list_spans for word in span.text.split() 
+                    if word.startswith('#')
+                ]
+    
+                # Lưu danh sách các từ đặc biệt vào tweet_data (hoặc biến khác)
+                tweet_data[f"{key}_mentions"] = mentions
+                tweet_data[f"{key}_hashtags"] = hashtags
+
+            elif key == 'media':
                 img_element = element.find_element(By.TAG_NAME, 'img')
-                tweet_data[key] = img_element.get_attribute('src') if img_element else None
-            else:
-                tweet_data[key] = utils.convert_to_number(element.text)
+                tweet_data[key] = img_element.get_attribute('src')
             
-            if key == 'create_at':
+            elif key == 'create_at':
                 # Loại bỏ ký tự không mong muốn (bao gồm cả "·")
                 raw_text = element.text.replace('·', '').strip()
 
@@ -67,12 +78,16 @@ try:
                     tweet_data[key] = timestamp
                 except ValueError:
                     tweet_data[key] = None  # Nếu không thể chuyển đổi thời gian, gán None
+            else:
+                tweet_data[key] = utils.convert_to_number(element.text)
 
         except:
             tweet_data[key] = None  # Gán None nếu không tìm thấy
-    print(tweet_data)
+    # print(tweet_data)
     print(json.dumps(tweet_data, indent=4, ensure_ascii=False))
-
+    user_element = tweet.find_element(By.XPATH, './div/div/div/div/div/section/div/div/div[1]/div/div/article/div/div/div[2]/div[2]/div/div[1]/div[1]/div/div/div[2]/div/div/a/div/span')
+    user_element.click()
+    time.sleep(5)
 except Exception as e:
     print(str(e))
 
