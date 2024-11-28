@@ -12,18 +12,22 @@ CREATE TABLE `users` (
   `joined_at` timestamp,
   `following` integer DEFAULT 0,
   `follower` integer DEFAULT 0,
-  `posts_cnt` integer DEFAULT 0
+  `posts_cnt` integer DEFAULT 0,
+  `saved_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `tweets` (
   `tweet_id` varchar(255) PRIMARY KEY,
-  `content` varchar(255) NULL,
   `created_at` timestamp,
+  `content` varchar(255) NULL,
   `media` text NULL,
   `comment_cnt` integer DEFAULT 0,
   `repost_cnt` integer DEFAULT 0,
   `like_cnt` integer DEFAULT 0,
-  `view_cnt` integer DEFAULT 0
+  `view_cnt` integer DEFAULT 0,
+  `saved_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `user_post_tweet` (

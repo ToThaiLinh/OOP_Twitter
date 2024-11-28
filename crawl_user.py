@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 import random
 import time
 import json
+import utils
+from datetime import datetime
 
 auth_token = '115b13796cb12c39092b93d1286a0b7078170ddf'
 
@@ -30,33 +32,41 @@ xpath_user = {
     'posts_cnt': './div/div/div/div/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/div'
 }
 
+def crawl_user(driver, xpath_user):
+    try:
+        main_element = driver.find_element(By.TAG_NAME, "main")
+        user_data = {}
 
-try:
-    main_element = driver.find_element(By.TAG_NAME, "main")
-    print('da tim thay main')
-    user_data = {}
-
-    # Tìm và trích xuất dữ liệu theo từng XPath
-    for key, xpath in xpath_user.items():
-        try:
-            if key == "role":
-                # Kiểm tra sự tồn tại của tick xanh
-                try:
-                    role_element = main_element.find_element(By.XPATH, xpath)
-                    user_data[key] = 'KOL'  # Gán 2 nếu có tick xanh (KOL)
-                except:
-                    user_data[key] = 'User'  # Gán 1 nếu không có tick xanh (User)
-            else:
-                # Tìm phần tử bằng XPath và lấy nội dung text
+        # Tìm và trích xuất dữ liệu theo từng XPath
+        for key, xpath in xpath_user.items():
+            try:
                 element = main_element.find_element(By.XPATH, xpath)
-                user_data[key] = element.text
-        except:
-            user_data[key] = None  # Gán None nếu không tìm thấy
+                if key == "role":
+                   
+                    try:
+                        role_element = main_element.find_element(By.XPATH, xpath)
+                        user_data[key] = 'KOL'  
+                    except:
+                        user_data[key] = 'User'  
+                elif key == 'following' or key == 'follower':
+                    user_data[key] = utils.convert_to_number(element.text)
+                elif key == 'posts_cnt':
+                    text_cnt = element.text.split()[0]
+                    user_data[key] = utils.convert_to_number(text_cnt)
+                elif key == 'joined_at':
+                    words = element.text.split(" ")
+                    text_time = " ".join(words[-2:])
+                    user_data[key] = datetime.strptime(text_time, "%B %Y").strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                   
+                    user_data[key] = element.text
+            except:
+                user_data[key] = None  
 
-    # In dữ liệu đã trích xuất
-    print(json.dumps(user_data, indent=4, ensure_ascii=False))
-except Exception as e:
-    print(str(e))
+        print(json.dumps(user_data, indent=4, ensure_ascii=False))
+    except Exception as e:
+        print(str(e))
 
-# Đóng trình duyệt
+crawl_user(driver, xpath_user)
+
 driver.quit()

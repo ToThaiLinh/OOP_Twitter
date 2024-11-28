@@ -3,8 +3,11 @@ from selenium.webdriver.common.by import By
 import random
 import time
 
+import crawl_tweet
+from data.mysql_database import MySQLDatabase
+from services.tweet_service import TweetService
+from xpath import xpath_tweet
 
-# Danh sách các hashtag liên quan đến blockchain
 hashtags = [
     "blockchain", "crypto", "cryptocurrency", "bitcoin", "ethereum", 
     "DeFi", "NFT", "web3", "blockchaintechnology", "altcoin", 
@@ -16,7 +19,6 @@ hashtags = [
 
 
 def fetch_blockchain_tweets(auth_token):
-    # Khởi tạo trình duyệt
     driver = webdriver.Chrome()
     
     # Đặt auth_token vào cookie để duy trì phiên đăng nhập
@@ -26,33 +28,37 @@ def fetch_blockchain_tweets(auth_token):
         "value": auth_token,
         "domain": ".x.com"
     })
+
+    db = MySQLDatabase(host='localhost', user='root', password='', database='twitter')
+    tweet_service = TweetService(db = db)
     
     # Duyệt qua từng hashtag trong danh sách
     for tag in hashtags[0:1]:
         # Mở trang hashtag tương ứng
         driver.get(f"https://x.com/hashtag/{tag}")
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(10)
 
         # Cuộn xuống để tải thêm nội dung
-        for _ in range(3):  # Có thể điều chỉnh số lần cuộn
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(random.randint(5, 10))
+        # for _ in range(3):  
+        #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #     time.sleep(random.randint(5, 10))
 
-        # Lấy danh sách các bài tweet
         tweets = driver.find_elements(By.CSS_SELECTOR, "article")
         
-        # In nội dung các bài viết
         print(f"Hashtag #{tag}:")
         for i, tweet in enumerate(tweets):
             try:
-                content = tweet.find_element(By.CSS_SELECTOR, "div[lang]").text
+                tweet.click()
+                driver.implicitly_wait(5)
+                
+                tweet_data = crawl_tweet(driver, xpath_tweet, 0) 
+                tweet_service.create(**tweet_data)
             except Exception as e:
                 print(f'Khong the lay bai viet #{i + 1}')
                 print(f'Lỗi {str(e)}')
                 continue
-        print("\n" + "="*50 + "\n")  # Phân cách giữa các hashtag
+        print("\n" + "="*50 + "\n") 
 
-    # Đóng trình duyệt
     driver.quit()
 
 fetch_blockchain_tweets('115b13796cb12c39092b93d1286a0b7078170ddf')
