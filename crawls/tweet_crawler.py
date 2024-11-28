@@ -1,23 +1,21 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from datetime import datetime
-import time
 import json
-import Utils.utils as utils
+from utils.utils import Converter
 
 
 class TweetCrawler:
-    def __init__(self, driver, url):
+    def __init__(self, driver, xpath_tweet):
         self.driver = driver
-        self.url = url
+        self.xpath_tweet = xpath_tweet
 
-    def crawl_tweet(self):
-        """Crawl a specific tweet's data by link and index."""
-        self.driver.get(self.url)
-        time.sleep(5)
+    def crawl_tweet(self, url):
+
+        self.driver.get(url)
+        self.driver.implicitly_wait(10)
 
         try:
-            tweet = self.driver.find_elements(By.TAG_NAME, 'article')[0]
+            tweet = self.driver.find_element(By.TAG_NAME, 'article')
             tweet_data = {}
 
             try:
@@ -25,18 +23,8 @@ class TweetCrawler:
             except Exception:
                 tweet_data['tweet_id'] = None
 
-            xpath_tweet = {
-                'created_at': './div/div/div[3]/div[4]/div/div[1]/div/div[1]/a/time',
-                'content': './div/div/div[3]/div[1]/div/div',
-                'media': './div/div/div[3]/div[2]/div/div/div/div/div/div/div/a/div/div[2]/div',
-                'comment_cnt': './div/div/div[3]/div[5]/div/div/div[1]/button/div/div[2]/span/span/span',
-                'repost_cnt': './div/div/div[3]/div[5]/div/div/div[2]/button/div/div[2]/span/span/span',
-                'like_cnt': './div/div/div[3]/div[5]/div/div/div[3]/button/div/div[2]/span/span/span',
-                'view_cnt': './div/div/div[3]/div[4]/div/div[1]/div/div[3]/span/div/span/span/span'
-            }
-
             # Extract tweet data
-            for key, xpath in xpath_tweet.items():
+            for key, xpath in self.xpath_tweet.items():
                 try:
                     element = tweet.find_element(By.XPATH, xpath)
 
@@ -63,10 +51,10 @@ class TweetCrawler:
                         except ValueError:
                             tweet_data[key] = None
                     else:
-                        tweet_data[key] = utils.convert_to_number(element.text)
+                        tweet_data[key] = Converter.convert_to_number(element.text)
 
                 except Exception:
-                    tweet_data[key] = None  # If the element is not found, set to None
+                    tweet_data[key] = None  
 
             print(json.dumps(tweet_data, indent=4, ensure_ascii=False))
             return tweet_data

@@ -4,6 +4,7 @@ from data.mysql_database import MySQLDatabase
 
 db = MySQLDatabase(host='localhost', user='root', password='', database='twitter')
 tweet_service = TweetService(db = db)
+user_service = UserService(db = db)
 
 # user = {
 #     "user_id": "@elonmusk",

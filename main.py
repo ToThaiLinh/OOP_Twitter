@@ -1,19 +1,27 @@
-from dotenv import load_dotenv
-import os
+from selenium import webdriver
+import time
 
-import login
-import crawl
+from crawls.tweet_crawler import TweetCrawler
+from crawls.user_crawler import UserCrawler
+import config.xpath as xpath
 
-load_dotenv()
-# Nhập thông tin đăng nhập Twitter
-username = os.getenv('USERNAME')  # Thay bằng tên người dùng của bạn
-password = os.getenv('PASSWORD')  # Thay bằng mật khẩu của bạn
+auth_token = '115b13796cb12c39092b93d1286a0b7078170ddf'
 
-# Lấy hoặc tải lại auth_token
-auth_token = login.login_and_get_token(username, password)
+driver = webdriver.Chrome()
+driver.get('https://x.com')
 
-# Nếu lấy được token, tiếp tục tìm bài viết
-if auth_token:
-    crawl.fetch_blockchain_tweets(auth_token)
-else:
-    print("Không thể đăng nhập và lấy token.")
+driver.add_cookie({
+        "name": "auth_token",
+        "value": auth_token,
+        "domain": ".x.com"
+    })
+
+time.sleep(5)
+
+user_crawler = UserCrawler(driver= driver, xpath_user = xpath.xpath_user)
+tweet_crawler = TweetCrawler(driver = driver, xpath_tweet = xpath.xpath_tweet)
+
+user_crawler.crawl_user("https://x.com/elonmusk")
+tweet_crawler.crawl_tweet("https://x.com/Orbler1/status/1861988115717759356")
+
+driver.quit()

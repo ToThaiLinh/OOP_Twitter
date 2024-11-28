@@ -4,7 +4,7 @@ xpath_user = {
     'role': './div/div/div/div/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[2]/span[1]/span[1]/div',
     'joined_at' : './div/div/div/div/div/div[3]/div/div/div/div/div[4]/div/span/span',
     'following': './div/div/div/div/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span',
-    'follower' : './div/div/div/div/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span' ,
+    'follower' : './div/div/div/div/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span' ,
     'posts_cnt': './div/div/div/div/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/div'
 }
 
