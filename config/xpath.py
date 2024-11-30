@@ -1,10 +1,10 @@
 xpath_user = {
     'user_id' : './div/div/div/div/div/div[3]/div/div/div/div/div[2]/div/div/div/div[2]/div/div/div/span',
     'username' : './div/div/div/div/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]',
-    'role': './div/div/div/div/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[2]/span[1]/span[1]/div',
-    'joined_at' : './div/div/div/div/div/div[3]/div/div/div/div/div[4]/div/span/span',
-    'following': './div/div/div/div/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span',
-    'follower' : './div/div/div/div/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span' ,
+    'role': './div/div/div/div/div/div[3]/div/div/div/div[1]/div[2]/div/div[1]/div/div[1]/div/div/span/span[2]/span/span/div/button',
+    'joined_at' : "//span[contains(text(), 'Joined')]",
+    'following': "//a[contains(@href, 'following')]/span/span",
+    'follower' : "//a[contains(@href, 'verified_followers')]/span/span",
     'posts_cnt': './div/div/div/div/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/div'
 }
 
@@ -26,5 +26,5 @@ xpath_quote = {
 
 xpath_retweet = {
     'user_id': '/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[1]/div/div/button/div/div[2]/div[1]/div[1]/div/div[2]/div/a/div/div/span'
-
+    
 }

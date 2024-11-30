@@ -3,15 +3,11 @@ import time
 import json
 import uuid
 
-class RetweetCrawler:
-    def __init__(self, driver, url):
-        self.driver = driver
-        self.reposts = []
+from crawls.base_crawler import BaseCrawler
 
-    def scroll_page(self, scroll_count=3, wait_time=3):
-        for _ in range(scroll_count):
-            self.driver.execute_script("window.scrollTo(0, 500)")
-            time.sleep(wait_time) 
+class RetweetCrawler(BaseCrawler):
+    def __init__(self, driver):
+        super().__init__(driver)
 
     def get_retweet_data(self, element_section, i):
         retweet_data = {}
@@ -26,10 +22,10 @@ class RetweetCrawler:
             retweet_data = None
         return retweet_data
     
-    def crawl_retweets(self, url):
-
+    def crawl(self, url):
+        reposts = []
         self.driver.get(url) 
-        time.sleep(5)
+        self.driver.implicitly_wait(10)
         
         self.scroll_page(scroll_count=3, wait_time=3)
         
@@ -37,9 +33,7 @@ class RetweetCrawler:
         for i in range(1, 10): 
             retweet_data = self.get_retweet_data(element_section, i)
             if retweet_data:
-                self.reposts.append(retweet_data) 
+                reposts.append(retweet_data) 
+        return reposts
         
-    def run(self):
-        self.crawl_retweets()
-        return json.dumps(self.reposts, indent=4, ensure_ascii=False)
 

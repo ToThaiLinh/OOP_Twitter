@@ -1,14 +1,17 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import json
 from datetime import datetime
+from crawls.base_crawler import BaseCrawler
 from utils.utils import Converter
 
-class UserCrawler:
+class UserCrawler(BaseCrawler):
     def __init__(self, driver, xpath_user):
-        self.driver = driver
+        super().__init__(driver)
         self.xpath_user = xpath_user
     
-    def crawl_user(self, url):
+    def crawl(self, url):
         user_data = {}  
         try:
             
@@ -19,17 +22,19 @@ class UserCrawler:
 
             for key, xpath in self.xpath_user.items():
                 try:
-                    element = main_element.find_element(By.XPATH, xpath)
-
                     if key == "role":
                         user_data[key] = self._get_user_role(main_element)
                     elif key in ['following', 'follower']:
+                        element = main_element.find_element(By.XPATH, xpath)
                         user_data[key] = Converter.convert_to_number(element.text)
                     elif key == 'posts_cnt':
+                        element = main_element.find_element(By.XPATH, xpath)
                         user_data[key] = self._get_posts_count(element)
                     elif key == 'joined_at':
+                        element = main_element.find_element(By.XPATH, xpath)
                         user_data[key] = self._get_joined_date(element)
                     else:
+                        element = main_element.find_element(By.XPATH, xpath)
                         user_data[key] = element.text
                 except Exception as e:
                     print(f"Error while fetching {key}: {str(e)}")
@@ -45,8 +50,11 @@ class UserCrawler:
     def _get_user_role(self, main_element):
         try:
             role_element = main_element.find_element(By.XPATH, self.xpath_user.get('role'))
-            return 'KOL'  
-        except:
+            if role_element:
+                return 'KOL'
+            return 'User'
+        except Exception as e:
+            print(str(e))
             return 'User' 
 
     def _get_posts_count(self, element):

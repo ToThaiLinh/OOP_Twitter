@@ -26,6 +26,8 @@ class Converter:
         Hàm chuyển đổi số dạng '12K', '12M' thành số thực.
         """
         try:
+            text = text.replace(',', '.')
+
             if text.endswith('K'):
                 return float(text[:-1]) * 1_000
             elif text.endswith('M'):

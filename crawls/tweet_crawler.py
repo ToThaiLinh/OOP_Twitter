@@ -1,15 +1,16 @@
 from selenium.webdriver.common.by import By
 from datetime import datetime
 import json
+from crawls.base_crawler import BaseCrawler
 from utils.utils import Converter
 
 
-class TweetCrawler:
+class TweetCrawler(BaseCrawler):
     def __init__(self, driver, xpath_tweet):
-        self.driver = driver
+        super().__init__(driver)
         self.xpath_tweet = xpath_tweet
 
-    def crawl_tweet(self, url):
+    def crawl(self, url):
 
         self.driver.get(url)
         self.driver.implicitly_wait(10)
@@ -62,3 +63,5 @@ class TweetCrawler:
         except Exception as e:
             print(f"Error crawling tweet: {e}")
             return None
+    
+
