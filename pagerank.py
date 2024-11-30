@@ -6,15 +6,20 @@ class Graph:
         self.convergence = convergence
         self.maxLoop = maxLoop
         self.numNode = numNode
-        self.numOut = [0] * numNode
+        self.sumOut = [0] * numNode
         self.nodeIn = [[] for _ in range(numNode)]
+        self.weight = [[] for _ in range(numNode)]
+        self.numIn = [0] * numNode
         self.pr = [1.0 / numNode] * numNode 
         #khởi tạo pr[i] = 1/numNode
 
-    def add_arc(self, fromNode, toNode):
+    def add_arc(self, fromNode, toNode, wEdge):
         if toNode not in self.nodeIn[fromNode]:
             self.nodeIn[toNode].append(fromNode)
-            self.numOut[fromNode] += 1
+            self.weight[toNode].append(wEdge)
+            self.numIn[toNode] += 1
+            self.sumOut[fromNode] += wEdge
+            
 
     def computePagerank(self):
         diff = 1
@@ -24,12 +29,18 @@ class Graph:
         while diff > self.convergence and numIteration < self.maxLoop:
             old_pr = self.pr[:]
             diff = 0
-            sumZeroNodePr = sum(old_pr[i] for i in range(self.numNode) if self.numOut[i] == 0) #sum pagerank những đỉnh không có cạnh ra
+            sumZeroNodePr = sum(old_pr[i] for i in range(self.numNode) if self.sumOut[i] == 0) #sum pagerank những đỉnh không có cạnh ra
 
             for i in range(self.numNode):
                 rank = (1 - self.dumpingFactor) / self.numNode
                 rank += self.dumpingFactor * sumZeroNodePr / self.numNode
-                rank += self.dumpingFactor * sum(old_pr[j] / self.numOut[j] for j in self.nodeIn[i] if self.numOut[j] > 0) #pr[a] = pr[b]/numOut[b] + pr[c]/numOut[c] + ... + pr[z]/numOut[z] 
+                for j in range(self.numIn[i]):
+                    u = self.nodeIn[i][j]
+                    if self.sumOut[u] > 0:
+                        w = self.weight[i][j]
+                        rank += self.dumpingFactor * old_pr[u] * w / self.sumOut[u]
+                
+                #rank += self.dumpingFactor * sum(old_pr[j]  / self.sumOut[j] for j in self.nodeIn[i] if self.sumOut[j] > 0) #pr[a] = pr[b]/numOut[b] + pr[c]/numOut[c] + ... + pr[z]/numOut[z] 
                 diff += abs(rank - old_pr[i])
                 self.pr[i] = rank
 
@@ -45,12 +56,12 @@ n = 4
 graph = Graph(n)
 
 
-graph.add_arc(0, 1)
-graph.add_arc(0, 2)
-graph.add_arc(1, 2)
-graph.add_arc(2, 0)
-graph.add_arc(2, 3)
-graph.add_arc(3, 0)
+graph.add_arc(0, 1, 1)
+graph.add_arc(0, 2, 1)
+graph.add_arc(1, 2, 1)
+graph.add_arc(2, 0, 1)
+graph.add_arc(2, 3, 1)
+graph.add_arc(3, 0, 1)
 
 graph.computePagerank()
 graph.printPagerank()
