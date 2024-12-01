@@ -5,7 +5,17 @@ class UserService:
     
     def create(self, user_id, username, role, joined_at, following, follower, posts_cnt):
         try:
-            query = "INSERT INTO users (user_id, username, role, joined_at, following, follower, posts_cnt) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            query = """
+            INSERT INTO users (user_id, username, role, joined_at, following, follower, posts_cnt) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s) 
+            ON DUPLICATE KEY UPDATE 
+                username = VALUES(username),
+                role = VALUES(role),
+                joined_at = VALUES(joined_at),
+                following = VALUES(following),
+                follower = VALUES(follower),
+                posts_cnt = VALUES(posts_cnt)
+            """
             params = (user_id, username, role, joined_at, following, follower, posts_cnt)
             self.db.execute(query, params)
             self.db.commit()

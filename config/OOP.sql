@@ -1,8 +1,13 @@
 CREATE DATABASE twitter;
 USE twitter;
-CREATE TABLE `follows` (
-  `following_user_id` varchar(255),
-  `followed_user_id` varchar(255)
+CREATE TABLE `followings` (
+  `user_id` varchar(255),
+  `following_user_id` varchar(255)
+);
+
+CREATE TABLE `followers` (
+  `user_id` varchar(255),
+  `follower_user_id` varchar(255)
 );
 
 CREATE TABLE `users` (
@@ -69,9 +74,13 @@ CREATE TABLE `mentions` (
   `tweet_id` varchar(255)
 );
 
-ALTER TABLE `follows` ADD FOREIGN KEY (`following_user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `followings` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
-ALTER TABLE `follows` ADD FOREIGN KEY (`followed_user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `followings` ADD FOREIGN KEY (`following_user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `followers` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `followers` ADD FOREIGN KEY (`follower_user_id`) REFERENCES `users` (`user_id`);
 
 ALTER TABLE `user_post_tweet` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 

@@ -6,15 +6,15 @@ db = MySQLDatabase(host='localhost', user='root', password='', database='twitter
 tweet_service = TweetService(db = db)
 user_service = UserService(db = db)
 
-# user = {
-#     "user_id": "@elonmusk",
-#     "username": "Elon Musk",
-#     "role": "KOL",
-#     "joined_at": "2009-06-01 00:00:00",
-#     "following": 852.0,
-#     "follower": 852.0,
-#     "posts_cnt": 60500.0
-# }
+user = {
+    "user_id": "@elonmusk",
+    "username": "Elon Musk",
+    "role": "KOL",
+    "joined_at": "2009-06-01 00:00:00",
+    "following": 852.0,
+    "follower": 1000,
+    "posts_cnt": 60500.0
+}
 
 tweet = {
     "tweet_id": "1860951753987920344",
@@ -27,6 +27,8 @@ tweet = {
     "view_cnt": 24500000.0
 }
 
+# user_service.create(**user)
+# user_service.close()
 
-tweet_service.create(**tweet)
-tweet_service.close()
+# tweet_service.create(**tweet)
+# tweet_service.close()

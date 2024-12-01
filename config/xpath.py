@@ -19,12 +19,24 @@ xpath_tweet = {
     'view_cnt' : './div/div/div[3]/div[4]/div/div[1]/div/div[3]/span/div/span/span/span'
 }
 
+xpath_comment = {
+    'user_id' : './div/div/div[2]/div[2]/div[1]/div/div[1]/div/div/div[2]/div/div[1]/a/div/span'
+}
+
 xpath_quote = {
-    'repost_id' : "",
-    'user_id' : ''
+    'user_id': './div/div/div[2]/div[2]/div[1]/div/div[1]/div/div/div[2]/div/div[1]/a/div/span',
+    'content': './div/div/div[2]/div[2]/div[2]/div'   
 }
 
 xpath_retweet = {
-    'user_id': '/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/section/div/div/div[1]/div/div/button/div/div[2]/div[1]/div[1]/div/div[2]/div/a/div/div/span'
-    
+    'user_id': './div/div[2]/div[1]/div[1]/div/div[2]/div/a/div/div/span',
+    'content': './div/div[2]/div[2]/span'
+}
+
+xpath_following = {
+    'following_user_id' : './div/div[2]/div[1]/div[1]/div/div[2]/div/a/div/div/span'
+}
+
+xpath_follower = {
+    'follower_user_id' : './div/div[2]/div[1]/div[1]/div/div[2]/div/a/div/div/span'
 }

@@ -53,8 +53,7 @@ class UserCrawler(BaseCrawler):
             if role_element:
                 return 'KOL'
             return 'User'
-        except Exception as e:
-            print(str(e))
+        except:
             return 'User' 
 
     def _get_posts_count(self, element):
