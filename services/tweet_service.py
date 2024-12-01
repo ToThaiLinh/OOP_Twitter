@@ -20,6 +20,34 @@ class TweetService:
         self.db.execute_many(query, params) 
         self.db.commit()
 
+    def save_hashtag(self, hashtag_id, hashtag_name):
+        query = """
+        INSERT INTO hashtags (hashtag_id, hashtag_name)
+        VALUES (%s, %s)
+        """
+        params = (hashtag_id, hashtag_name)
+        try:
+            self.db.execute(query, params)
+            self.db.commit()
+        except Exception as e:
+            print(f"Error occurred while inserting hashtag: {e}")
+            self.db.rollback() 
+    
+    def save_have_hashtag(self, have_hashtag_id, hashtag_id, tweet_id):
+        query = """
+        INSERT INTO tweet_have_hashtags (have_hashtag_id, hashtag_id, tweet_id)
+        VALUES (%s, %s, %s)
+        """
+        params = (have_hashtag_id, hashtag_id, tweet_id)
+        try:
+            self.db.execute(query, params)
+            self.db.commit()
+        except Exception as e:
+            print(f"Error occurred while inserting have_hashtag: {e}")
+            self.db.rollback() 
+    
+
     def close(self):
         self.db.close() 
+
 
