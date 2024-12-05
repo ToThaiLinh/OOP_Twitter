@@ -1,9 +1,13 @@
+import json
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
+
+from config import xpath
+from config.hashtags import hashtags
+from controllers.tweet_controller import get_tweet_link
+from controllers.user_controller import get_account_link
+from crawls.tweet_crawler import TweetCrawler
 
 auth_token = '115b13796cb12c39092b93d1286a0b7078170ddf'
 
@@ -22,50 +26,11 @@ driver.add_cookie({
 
 time.sleep(3)
 
-tweets = []
+# tweet_link = get_tweet_link(driver, hashtags, 5)
+# print(json.dumps(tweet_link, indent=4, ensure_ascii=False))
 
-url = 'https://x.com/hashtag/blockchain'
-driver.get(url)
-
-# Chờ trang tải xong
-wait = WebDriverWait(driver, 10)
-wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@lang="en" and @data-testid="tweetText"]')))
-
-# Cuộn và xử lý tweet
-for _ in range(3):  # Thử cuộn trang 3 lần
-    tweet_elements = driver.find_elements(By.XPATH, '//div[@lang="en" and @data-testid="tweetText"]')
-    for i, tweet in enumerate(tweet_elements):
-        try:
-            # Cập nhật lại danh sách `tweet_elements` để tránh phần tử cũ bị lỗi
-            tweet_elements = driver.find_elements(By.XPATH, '//div[@lang="en" and @data-testid="tweetText"]')
-            tweet = tweet_elements[i]
-
-            # Kiểm tra xem tweet đã được xử lý chưa
-            if tweet.text not in tweets:
-                tweets.append(tweet.text)
-
-                # Cuộn đến phần tử
-                driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", tweet)
-                time.sleep(1)
-
-                # Click vào phần tử
-                tweet.click()
-                print(f"Đã click vào phần tử {i + 1}: {driver.current_url}")
-                time.sleep(2)
-
-                # Quay lại trang trước
-                driver.back()
-                time.sleep(2)
-
-        except Exception as e:
-            print(f"Lỗi khi xử lý phần tử {i + 1}: {e}")
-
-    # Cuộn xuống cuối trang để tải thêm phần tử
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-
-print(f'Xử lý được {len(tweets)} phần tử.')
-
+user_link = get_account_link(driver, hashtags, 5)
+print(json.dumps(user_link, indent=4, ensure_ascii=False))
 
 driver.quit()
 

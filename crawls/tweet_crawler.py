@@ -18,6 +18,14 @@ class TweetCrawler(BaseCrawler):
         try:
             tweet = self.driver.find_element(By.TAG_NAME, 'article')
             tweet_data = {}
+            user_post = None
+            mentions = []
+            hashtags = []
+
+            try:
+                user_post = self.driver.find_element(By.XPATH, './div/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div/div/a/div/span').text
+            except Exception:
+                user_post = None
 
             try:
                 tweet_data['tweet_id'] = self.driver.current_url.split('/')[-1]
@@ -37,9 +45,6 @@ class TweetCrawler(BaseCrawler):
                         mentions = [word for word in text.split() if word.startswith('@')]
                         hashtags = [word for word in text.split() if word.startswith('#')]
 
-                        tweet_data[f"{key}_mentions"] = mentions
-                        tweet_data[f"{key}_hashtags"] = hashtags
-
                     elif key == 'media':
                         img_element = element.find_element(By.TAG_NAME, 'img')
                         tweet_data[key] = img_element.get_attribute('src')
@@ -57,8 +62,12 @@ class TweetCrawler(BaseCrawler):
                 except Exception:
                     tweet_data[key] = None  
 
+            print(user_post)
             print(json.dumps(tweet_data, indent=4, ensure_ascii=False))
-            return tweet_data
+            print(json.dumps(mentions, indent=4, ensure_ascii=False))
+            print(json.dumps(hashtags, indent=4, ensure_ascii=False))
+            
+            return tweet_data, user_post, mentions, hashtags
 
         except Exception as e:
             print(f"Error crawling tweet: {e}")
