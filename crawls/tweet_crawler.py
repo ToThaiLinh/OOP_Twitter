@@ -23,7 +23,8 @@ class TweetCrawler(BaseCrawler):
             hashtags = []
 
             try:
-                user_post = self.driver.find_element(By.XPATH, './div/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div/div/a/div/span').text
+                element_user = tweet.find_element(By.XPATH, './div/div/div[2]/div[2]/div')
+                user_post = element_user.find_element(By.XPATH, "//span[contains(text(), '@')]").text
             except Exception:
                 user_post = None
 
@@ -62,10 +63,10 @@ class TweetCrawler(BaseCrawler):
                 except Exception:
                     tweet_data[key] = None  
 
-            print(user_post)
-            print(json.dumps(tweet_data, indent=4, ensure_ascii=False))
-            print(json.dumps(mentions, indent=4, ensure_ascii=False))
-            print(json.dumps(hashtags, indent=4, ensure_ascii=False))
+            # print(user_post)
+            # print(json.dumps(tweet_data, indent=4, ensure_ascii=False))
+            # print(json.dumps(mentions, indent=4, ensure_ascii=False))
+            # print(json.dumps(hashtags, indent=4, ensure_ascii=False))
             
             return tweet_data, user_post, mentions, hashtags
 

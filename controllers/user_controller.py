@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 def get_account_link(driver, hashtags, scroll_counts):
     accounts = []
     
-    for hashtag in hashtags[0:2]:
+    for hashtag in hashtags:
         url = f'https://x.com/hashtag/{hashtag}'
         driver.get(url)
             

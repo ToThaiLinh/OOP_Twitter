@@ -27,7 +27,7 @@ class FollowerCrawler(BaseCrawler):
         self.driver.get(url) 
         self.driver.implicitly_wait(10)
 
-        user_id = self.driver.current_url.split('/')[-2]
+        user_id = '@' + self.driver.current_url.split('/')[-2]
 
         count = 0
         for _ in range(5):
@@ -41,8 +41,8 @@ class FollowerCrawler(BaseCrawler):
             # Scroll down using JavaScript
             self.driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
             time.sleep(2)
-        print(f'Found {count} followers')
-        print(json.dumps(followers, indent=4, ensure_ascii=False))
+        print(f'Found {count} followers with user {user_id}')
+        # print(json.dumps(followers, indent=4, ensure_ascii=False))
         return followers
 
 

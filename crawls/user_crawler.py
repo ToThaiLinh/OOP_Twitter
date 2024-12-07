@@ -40,7 +40,7 @@ class UserCrawler(BaseCrawler):
                     print(f"Error while fetching {key}: {str(e)}")
                     user_data[key] = None 
 
-            print(json.dumps(user_data, indent=4, ensure_ascii=False))
+            # print(json.dumps(user_data, indent=4, ensure_ascii=False))
             return user_data
         
         except Exception as e:
@@ -58,7 +58,7 @@ class UserCrawler(BaseCrawler):
 
     def _get_posts_count(self, element):
         try:
-            text_cnt = element.text.split()[0]
+            text_cnt = element.text.split(" ")[0]
             return Converter.convert_to_number(text_cnt)
         except Exception as e:
             print(f"Error processing posts count: {str(e)}")
