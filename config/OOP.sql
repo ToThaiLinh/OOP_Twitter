@@ -2,12 +2,14 @@ CREATE DATABASE twitter;
 USE twitter;
 CREATE TABLE `followings` (
   `user_id` varchar(255),
-  `following_user_id` varchar(255)
+  `following_user_id` varchar(255),
+  PRIMARY KEY (`user_id`, `following_user_id`)
 );
 
 CREATE TABLE `followers` (
   `user_id` varchar(255),
-  `follower_user_id` varchar(255)
+  `follower_user_id` varchar(255),
+  PRIMARY KEY (`user_id`, `follower_user_id`)
 );
 
 CREATE TABLE `users` (
@@ -36,42 +38,41 @@ CREATE TABLE `tweets` (
 );
 
 CREATE TABLE `user_post_tweet` (
-  `post_id` varchar(255) PRIMARY KEY,
   `user_id` varchar(255),
-  `tweet_id` varchar(255)
+  `tweet_id` varchar(255),
+  PRIMARY KEY (`user_id`, `tweet_id`)
 );
 
 CREATE TABLE `user_comment_tweet` (
-  `comment_id` varchar(255) PRIMARY KEY,
   `user_id` varchar(255),
   `tweet_id` varchar(255),
-  `parent_comment_id` varchar(255) NULL
+  `parent_comment_id` varchar(255) NULL,
+  PRIMARY KEY (`user_id`, `tweet_id`)
 );
 
 CREATE TABLE `reposts` (
-  `respost_id` varchar(255) PRIMARY KEY,
   `user_id` varchar(255),
   `tweet_id` varchar(255),
   `parent_tweet_id` varchar(255) NULL,
   `type` varchar(255),
-  `content` text NULL
+  `content` text NULL,
+  PRIMARY KEY (`user_id`, `tweet_id`)
 );
 
 CREATE TABLE `hashtags` (
-  `hashtag_id` varchar(255) PRIMARY KEY,
-  `hashtag_name` varchar(255)
+  `hashtag_name` varchar(255) PRIMARY KEY
 );
 
 CREATE TABLE `tweet_have_hashtags` (
-  `have_hashtag_id` varchar(255) PRIMARY KEY,
-  `hashtag_id` varchar(255),
-  `tweet_id` varchar(255)
+  `hashtag_name` varchar(255),
+  `tweet_id` varchar(255),
+  PRIMARY KEY (`user_id`, `hashtag_name`)
 );
 
 CREATE TABLE `mentions` (
-  `mention_id` varchar(255) PRIMARY KEY,
   `user_id` varchar(255),
-  `tweet_id` varchar(255)
+  `tweet_id` varchar(255),
+  PRIMARY KEY (`user_id`, `tweet_id`)
 );
 
 ALTER TABLE `followings` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
@@ -90,15 +91,11 @@ ALTER TABLE `user_comment_tweet` ADD FOREIGN KEY (`user_id`) REFERENCES `users` 
 
 ALTER TABLE `user_comment_tweet` ADD FOREIGN KEY (`tweet_id`) REFERENCES `tweets` (`tweet_id`);
 
-ALTER TABLE `user_comment_tweet` ADD FOREIGN KEY (`comment_id`) REFERENCES `tweets` (`tweet_id`);
-
 ALTER TABLE `reposts` ADD FOREIGN KEY (`tweet_id`) REFERENCES `tweets` (`tweet_id`);
 
 ALTER TABLE `reposts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
-ALTER TABLE `reposts` ADD FOREIGN KEY (`respost_id`) REFERENCES `tweets` (`tweet_id`);
-
-ALTER TABLE `tweet_have_hashtags` ADD FOREIGN KEY (`hashtag_id`) REFERENCES `hashtags` (`hashtag_id`);
+ALTER TABLE `tweet_have_hashtags` ADD FOREIGN KEY (`hashtag_name`) REFERENCES `hashtags` (`hashtag_name`);
 
 ALTER TABLE `tweet_have_hashtags` ADD FOREIGN KEY (`tweet_id`) REFERENCES `tweets` (`tweet_id`);
 

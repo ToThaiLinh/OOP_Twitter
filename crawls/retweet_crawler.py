@@ -13,7 +13,6 @@ class RetweetCrawler(BaseCrawler):
     def get_retweet_data(self, element):
         retweet_data = {}
         try:
-            retweet_data['respost_id'] = str(uuid.uuid4())
             retweet_data['user_id'] = element.find_element(By.XPATH, self.xpath_retweet.get('user_id')).text
             retweet_data['tweet_id'] = self.driver.current_url.split('/')[-2] 
             retweet_data['type'] = 'retweet'
@@ -44,7 +43,7 @@ class RetweetCrawler(BaseCrawler):
             self.driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
             time.sleep(2)
         print(f'Found {count} retweets')
-        print(json.dumps(retweets, indent=4, ensure_ascii=False))
+        # print(json.dumps(retweets, indent=4, ensure_ascii=False))
         return retweets
         
 

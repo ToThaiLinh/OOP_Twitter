@@ -13,7 +13,6 @@ class QuoteCrawler(BaseCrawler):
     def get_quote_data(self, element):
         quote_data = {}
         try:
-            quote_data['respost_id'] = str(uuid.uuid4())
             quote_data['user_id'] = element.find_element(By.XPATH, self.xpath_quote.get('user_id')).text
             quote_data['tweet_id'] = self.driver.current_url.split('/')[-2] 
             quote_data['type'] = 'quote'
@@ -44,7 +43,7 @@ class QuoteCrawler(BaseCrawler):
             self.driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
             time.sleep(2)
         print(f'Found {count} quotes')
-        print(json.dumps(quotes, indent=4, ensure_ascii=False))
+        # print(json.dumps(quotes, indent=4, ensure_ascii=False))
         return quotes
         
 

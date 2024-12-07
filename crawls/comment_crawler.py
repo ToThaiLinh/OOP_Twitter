@@ -13,7 +13,6 @@ class CommentCrawler(BaseCrawler):
     def get_comment_data(self, element):
         comment_data = {}
         try:
-            comment_data['comment_id'] = str(uuid.uuid4())
             comment_data['user_id'] = element.find_element(By.XPATH, self.xpath_comment.get('user_id')).text
             comment_data['tweet_id'] = self.driver.current_url.split('/')[-1] 
         except Exception as e:
@@ -42,7 +41,7 @@ class CommentCrawler(BaseCrawler):
             self.driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
             time.sleep(2)
         print(f'Found {count} comments')
-        print(json.dumps(comments, indent=4, ensure_ascii=False))
+        # print(json.dumps(comments, indent=4, ensure_ascii=False))
         return comments
         
 
