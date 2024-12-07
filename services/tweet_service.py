@@ -36,9 +36,8 @@ class TweetService:
         INSERT IGNORE INTO hashtags (hashtag_name)
         VALUES (%s)
         """
-        params = (hashtag_name,)
         try:
-            self.db.execute(query, params)
+            self.db.execute(query, (hashtag_name,))
             self.db.commit()
         except Exception as e:
             print(f"Error occurred while inserting hashtag: {e}")
