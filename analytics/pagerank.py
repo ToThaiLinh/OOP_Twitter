@@ -13,6 +13,14 @@ class TwitterGraph:
         self.nodes = {}  # {id: {'index': idx, 'type': 'user|tweet'}}
         self.edges = []  # (source_idx, target_idx, weight, type)
 
+        self.weights = {
+            'follow': 1.0,
+            'post': 2.0,
+            'retweet': 1.5,
+            'comment': 1.2,
+            'mention': 0.8
+        }
+        
         load_dotenv()
         self.db_config = {
             'host': os.getenv('HOST'),
@@ -20,6 +28,10 @@ class TwitterGraph:
             'password': os.getenv('PASSWORD'), 
             'database': os.getenv('DATABASE')
         }
+
+    def set_weights(self, new_weights):
+        # Update weights while keeping defaults for missing values
+        self.weights.update(new_weights)
 
     def add_node(self, node_id, node_type):
         if node_id not in self.nodes:
@@ -33,15 +45,7 @@ class TwitterGraph:
         from_idx = self.add_node(from_id, from_type)
         to_idx = self.add_node(to_id, to_type)
 
-        # Edge weights based on relationship type
-        weights = {
-            'follow': 1.0,
-            'post': 2.0,
-            'retweet': 1.5,
-            'comment': 1.2,
-            'mention': 0.8
-        }
-        weight = weights.get(edge_type, 1.0)
+        weight = self.weights.get(edge_type, 1.0)
         
         # Add bidirectional edges for certain relationships
         self.edges.append((from_idx, to_idx, weight, edge_type))
@@ -213,14 +217,3 @@ class TwitterGraph:
     #     plt.axis('off')
     #     plt.tight_layout()
     #     plt.show()
-
-# Usage
-graph = TwitterGraph()
-graph.load_twitter_data()
-rankings = graph.get_kol_rankings()
-
-print("\nTop KOL Rankings:")
-for user_id, score in rankings[:10]:
-    print(f"{user_id}: {score:.6f}")
-
-# graph.visualize_graph()
