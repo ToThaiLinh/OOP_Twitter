@@ -7,6 +7,13 @@ import os
 from main import start_crawl  # Import crawling function
 from datetime import datetime
 
+try:
+    if os.path.exists('pagerank_cache.json'):
+        os.remove('pagerank_cache.json')
+        print("Cache file deleted on startup")
+except Exception as e:
+    print(f"Error deleting cache file: {e}")
+
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
