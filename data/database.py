@@ -23,5 +23,9 @@ class Database(ABC):
         pass
 
     @abstractmethod
+    def rollback(self):
+        pass
+
+    @abstractmethod
     def close(self):
         pass

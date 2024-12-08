@@ -53,7 +53,7 @@ def start_crawl():
     tweet_links = get_tweet_link(driver, hashtags, 5)
     # print(json.dumps(tweet_links, indent=4, ensure_ascii=False))
 
-    # users = get_account_link(driver, hashtags, 5)
+    users = get_account_link(driver, hashtags, 5)
     # print(json.dumps(user_link, indent=4, ensure_ascii=False))
 
     for tweet_link in tweet_links:
@@ -130,28 +130,28 @@ def start_crawl():
         except Exception as e:
             print(f'Lỗi xảy ra với {tweet_link}')
 
-    # for user in users:
-    #     user_link = f'https://x.com/{user.lstrip("@")}'
+    for user in users:
+        user_link = f'https://x.com/{user.lstrip("@")}'
 
-    #     user_data = user_crawler.crawl(user_link)
-    #     user_service.create(**user_data)
+        user_data = user_crawler.crawl(user_link)
+        user_service.create(**user_data)
 
-    #     users_following = following_crawler.crawl(user_link + '/following')
-    #     if users_following:
-    #         for user_following in users_following:
-    #             user_data_following = user_crawler.crawl(f"https://x.com/{user_following['following_user_id'].lstrip('@')}")
-    #             user_service.create(**user_data_following)
-    #             user_service.save_following(**user_following)
+        users_following = following_crawler.crawl(user_link + '/following')
+        if users_following:
+            for user_following in users_following:
+                user_data_following = user_crawler.crawl(f"https://x.com/{user_following['following_user_id'].lstrip('@')}")
+                user_service.create(**user_data_following)
+                user_service.save_following(**user_following)
 
-    #     users_follower_common = follower_crawler.crawl(user_link + '/followers')
-    #     users_follower_verity = follower_crawler.crawl(user_link + '/verified_followers')
-    #     users_follower_common.extend(users_follower_verity)
-    #     users_follower = users_follower_common
-    #     if users_follower:
-    #         for user_follower in users_follower:
-    #             user_data_follower = user_crawler.crawl(f"https://x.com/{user_follower['follower_user_id'].lstrip('@')}")
-    #             user_service.create(**user_data_follower)
-    #             user_service.save_follower(**user_follower)
+        users_follower_common = follower_crawler.crawl(user_link + '/followers')
+        users_follower_verity = follower_crawler.crawl(user_link + '/verified_followers')
+        users_follower_common.extend(users_follower_verity)
+        users_follower = users_follower_common
+        if users_follower:
+            for user_follower in users_follower:
+                user_data_follower = user_crawler.crawl(f"https://x.com/{user_follower['follower_user_id'].lstrip('@')}")
+                user_service.create(**user_data_follower)
+                user_service.save_follower(**user_follower)
 
 
     user_service.close()

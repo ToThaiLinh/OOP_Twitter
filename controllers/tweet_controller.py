@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 def get_tweet_link(driver, hashtags, scroll_counts):
     tweets = []
-    for hashtag in hashtags[1:2]:
+    for hashtag in hashtags[0:5]:
 
         url = f'https://x.com/hashtag/{hashtag}'
         driver.get(url)
