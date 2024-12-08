@@ -4,6 +4,8 @@ import numpy as np
 import mysql.connector
 from dotenv import load_dotenv
 import os
+import json
+from datetime import datetime
 
 class TwitterGraph:
     def __init__(self, damping_factor=0.85, convergence=1e-6, max_iterations=100):
@@ -12,6 +14,7 @@ class TwitterGraph:
         self.max_iterations = max_iterations
         self.nodes = {}  # {id: {'index': idx, 'type': 'user|tweet'}}
         self.edges = []  # (source_idx, target_idx, weight, type)
+        self.cache_file = 'pagerank_cache.json'
 
         self.weights = {
             'follow': 1.0,
@@ -160,6 +163,29 @@ class TwitterGraph:
                    for node_id, data in kol_nodes.items()]
         
         return sorted(rankings, key=lambda x: x[1], reverse=True)
+    
+    def save_rankings(self, rankings):
+        cache_data = {
+            'timestamp': datetime.now().isoformat(),
+            'weights': self.weights,
+            'rankings': [(str(uid), float(score)) for uid, score in rankings]
+        }
+        with open(self.cache_file, 'w') as f:
+            json.dump(cache_data, f)
+
+    def load_cached_rankings(self):
+        try:
+            with open(self.cache_file, 'r') as f:
+                cache = json.load(f)
+                # Check if weights match
+                if cache['weights'] == self.weights:
+                    return {
+                        'rankings': cache['rankings'],
+                        'timestamp': cache['timestamp']
+                    }
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        return None
     
     # def visualize_graph(self):
     #     import networkx as nx

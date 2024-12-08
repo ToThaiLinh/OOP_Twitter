@@ -5,6 +5,7 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 from main import start_crawl  # Import crawling function
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -63,11 +64,25 @@ def update_weights():
 @app.route('/api/top-kols', methods=['GET'])
 def get_top_kols():
     try:
-        graph.load_twitter_data()
-        rankings = graph.get_kol_rankings()
+        # Try to load cached rankings
+        cache_data = graph.load_cached_rankings()
+        
+        if cache_data is None:
+            # No valid cache, return message to compute first
+            return jsonify({
+                'status': 'error',
+                'message': 'No PageRank data available. Please compute PageRank first.',
+                'cached': False
+            }), 404
+        
+        # Cache exists, proceed with data fetching
+        rankings = cache_data['rankings']
+        timestamp = cache_data['timestamp']
+        
+        # Get top 10
         top_10_kols = rankings[:10]
         
-        # Rest of the code for fetching user details remains same
+        # Database connection and user details fetching
         conn = mysql.connector.connect(**graph.db_config)
         cursor = conn.cursor(dictionary=True)
         
@@ -105,9 +120,28 @@ def get_top_kols():
 
         return jsonify({
             'status': 'success',
+            'cached': True,
+            'computed_at': timestamp,
             'data': users_data
         }), 200
 
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+    
+@app.route('/api/compute-pagerank', methods=['POST'])
+def compute_pagerank():
+    try:
+        graph.load_twitter_data()
+        rankings = graph.get_kol_rankings()
+        graph.save_rankings(rankings)
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'PageRank computed and cached successfully'
+        }), 200
     except Exception as e:
         return jsonify({
             'status': 'error',

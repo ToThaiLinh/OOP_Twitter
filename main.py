@@ -37,7 +37,7 @@ def start_crawl():
 
     time.sleep(3)
 
-    db = MySQLDatabase(host='localhost', user='root', password='', database='twitter')
+    db = MySQLDatabase(host='localhost', user='root', password='1234', database='twitter')
     user_service = UserService(db=db)
     tweet_service = TweetService(db = db)
 
