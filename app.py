@@ -147,6 +147,19 @@ def compute_pagerank():
             'status': 'error',
             'message': str(e)
         }), 500
+    
+@app.route('/api/weights', methods=['GET'])
+def get_weights():
+    try:
+        return jsonify({
+            'status': 'success',
+            'weights': graph.weights 
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
