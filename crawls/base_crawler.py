@@ -14,3 +14,5 @@ class BaseCrawler:
         except Exception as e:
             print(f"Error finding element ({value}): {str(e)}")
             return None
+    def crawl(url):
+        pass
